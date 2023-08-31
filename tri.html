@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tableau Dynamique</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        input[type="text"] {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        button {
+            padding: 7px 15px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #333;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tableau Dynamique</h1>
+
+        <form id="myForm">
+            <label for="age">Âge:</label>
+            <input type="text" id="age">
+            <button type="button" id="addButton">Ajouter</button>
+        </form>
+
+        <table id="myTable">
+            <thead>
+                <tr>
+                    <th>Âge</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+            </tbody>
+        </table>
+    </div>
+
+<script>
+const table = document.getElementById("myTable");
+const tableBody = document.getElementById("tableBody");
+const form = document.getElementById("myForm");
+const addButton = document.getElementById("addButton");
+
+const data = [];
+
+addButton.addEventListener("click", handleClick);
+
+function handleClick() {
+  const ageInput = document.getElementById("age");
+  const age = ageInput.value;
+
+  if (age) {
+    data.push({ age: age });
+    insertSorted(data, compareAges);
+    renderTable();
+    clearForm();
+  }
+}
+
+function compareAges(a, b) {
+  return parseInt(a.age) - parseInt(b.age);
+}
+
+function insertSorted(arr, compareFn) {
+  const len = arr.length;
+  let inserted = false;
+  for (let i = len - 1; i >= 0; i--) {
+    if (compareFn(arr[i], arr[i - 1]) < 0) {
+      const temp = arr[i];
+      arr[i] = arr[i - 1];
+      arr[i - 1] = temp;
+    } else {
+      inserted = true;
+      break;
+    }
+  }
+  if (!inserted) {
+    for (let i = 1; i < len; i++) {
+      const temp = arr[i];
+      arr[i] = arr[i - 1];
+      arr[i - 1] = temp;
+    }
+  }
+}
+
+function renderTable() {
+  clearTable();
+  for (var i = 0; i < data.length; i++) {
+    var entry = data[i];
+    var row = createTableRow();
+    var cell = createTableCell(entry.age);
+    row.appendChild(cell);
+    tableBody.appendChild(row);
+  }
+}
+
+function clearTable() {
+  while (tableBody.firstChild) {
+    tableBody.removeChild(tableBody.firstChild);
+  }
+}
+
+function createTableRow() {
+  return document.createElement("tr");
+}
+
+function createTableCell(text) {
+  var cell = document.createElement("td");
+  var cellText = document.createTextNode(text);
+  cell.appendChild(cellText);
+  return cell;
+}
+
+function clearForm() {
+  document.getElementById("age").value = "";
+}
+</script>
+</body>
+</html>
